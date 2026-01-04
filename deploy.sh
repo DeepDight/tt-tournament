@@ -7,10 +7,16 @@ set -e
 sudo apt update && sudo apt upgrade -y
 
 # ==========================================
-# 2. Устанавливаем Docker
+# 2. Устанавливаем Docker CE (без docker.io)
 # ==========================================
+# Удаляем старые пакеты Docker, если они есть
+sudo apt remove -y docker docker-engine docker.io containerd runc
+sudo apt autoremove -y
+
+# Устанавливаем зависимости
 sudo apt install -y ca-certificates curl gnupg lsb-release
 
+# Добавляем официальный репозиторий Docker CE
 sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
@@ -18,8 +24,16 @@ echo \
 "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
 $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
+# Обновляем пакеты
 sudo apt update
-sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker.io
+
+# Устанавливаем только официальные пакеты Docker CE (без docker.io)
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Проверяем версию Docker
+docker --version
+docker compose version
+
 
 # ==========================================
 # 3. Клонируем репозиторий проекта
@@ -215,3 +229,4 @@ docker update --restart=always tt-nginx
 echo "========================================"
 echo "🎉 Деплой завершен! Приложение работает с SSL."
 echo "Проверьте контейнеры: docker ps"
+
