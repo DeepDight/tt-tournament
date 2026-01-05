@@ -4,14 +4,6 @@ set -e
 echo "=== TT Tournament auto-deploy started ==="
 
 # -----------------------------
-# Проверка root
-# -----------------------------
-if [ "$EUID" -ne 0 ]; then
-  echo "❌ Запусти скрипт через sudo"
-  exit 1
-fi
-
-# -----------------------------
 # Переменные
 # -----------------------------
 REPO_URL="https://github.com/DeepDight/tt-tournament.git"
