@@ -253,6 +253,9 @@ docker run -d \
   --restart unless-stopped \
   $APP_NAME
 
+docker exec -it $APP_NAME npx prisma generate
+docker restart $APP_NAME
+
 # -----------------------------
 # Автозапуск
 # -----------------------------
