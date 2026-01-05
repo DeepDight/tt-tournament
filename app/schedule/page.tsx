@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { Player } from "@/app/interface";
 import Schedule from "@/component/Schedule";
 

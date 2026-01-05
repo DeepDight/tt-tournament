@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { Match, PrismaClient } from "@prisma/client";
 import { Player } from "@/app/interface";
 import React from "react";
@@ -141,15 +142,13 @@ function calculateGlicko2Ratings(
     if (match.result === "PLAYER1_WIN") {
       score1 = 1.0;
       score2 = 0.0;
-      result = `${playerDetails.get(match.player1Id)?.firstName} ${
-        playerDetails.get(match.player1Id)?.lastName
-      }`;
+      result = `${playerDetails.get(match.player1Id)?.firstName} ${playerDetails.get(match.player1Id)?.lastName
+        }`;
     } else if (match.result === "PLAYER2_WIN") {
       score1 = 0.0;
       score2 = 1.0;
-      result = `${playerDetails.get(match.player2Id)?.firstName} ${
-        playerDetails.get(match.player2Id)?.lastName
-      }`;
+      result = `${playerDetails.get(match.player2Id)?.firstName} ${playerDetails.get(match.player2Id)?.lastName
+        }`;
     } else {
       score1 = 0.5;
       score2 = 0.5;

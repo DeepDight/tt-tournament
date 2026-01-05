@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import PlayerProfile from "@/component/PlayerProfile";
 import { Metadata } from "next";
 
