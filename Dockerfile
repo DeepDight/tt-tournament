@@ -10,7 +10,6 @@ RUN npm ci
 COPY . .
 
 # Prisma client
-RUN npx prisma generate
 
 # 🔥 ВАЖНО: билд Next.js
 RUN npm run build
