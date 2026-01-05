@@ -57,7 +57,6 @@ if ! command -v docker &> /dev/null; then
     containerd.io \
     docker-buildx-plugin \
     docker-compose-plugin \
-    docker.io
 fi
 
 # -----------------------------
