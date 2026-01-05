@@ -16,7 +16,7 @@ fi
 # -----------------------------
 REPO_URL="https://github.com/DeepDight/tt-tournament.git"
 REPO_BRANCH="instdockervpsnginx"
-APP_DIR="/opt/tt-tournament"
+APP_DIR="$HOME/tt-tournament"   # Клонируем в домашнюю папку пользователя
 
 APP_NAME="tt-app"
 POSTGRES_CONTAINER="tt-postgres"
@@ -40,31 +40,21 @@ apt update && apt upgrade -y
 if ! command -v docker &> /dev/null; then
   echo ">>> Установка Docker (docker-ce)"
 
-  # снимаем hold, если есть
   apt-mark unhold docker docker.io containerd runc 2>/dev/null || true
-
-  # полностью удаляем конфликтующие пакеты
   apt purge -y docker docker-engine docker.io containerd runc || true
   apt autoremove -y
   apt autoclean -y
 
-  # ключ Docker (БЕЗ интерактива)
   mkdir -p /etc/apt/keyrings
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
     gpg --dearmor --yes -o /etc/apt/keyrings/docker.gpg
-
   chmod a+r /etc/apt/keyrings/docker.gpg
 
-  # репозиторий Docker
-  echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-    https://download.docker.com/linux/ubuntu \
-    $(lsb_release -cs) stable" | \
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+    https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
     tee /etc/apt/sources.list.d/docker.list > /dev/null
 
   apt update
-
-  # УСТАНАВЛИВАЕМ ТОЛЬКО docker-ce
   apt install -y \
     docker-ce \
     docker-ce-cli \
@@ -77,7 +67,6 @@ fi
 # Клонирование репозитория
 # -----------------------------
 echo ">>> Клонирование репозитория"
-
 if [ -d "$APP_DIR" ]; then
   echo "⚠️ $APP_DIR уже существует, используем его"
 else
@@ -98,18 +87,15 @@ docker volume inspect $VOLUME >/dev/null 2>&1 || docker volume create $VOLUME
 # Ввод паролей (через TTY)
 # -----------------------------
 echo ">>> Ввод паролей"
-
 read -s -p "Пароль для локального PostgreSQL: " POSTGRES_PASSWORD </dev/tty
 echo
 read -s -p "Пароль BASIC_AUTH (admin): " BASIC_AUTH_PASSWORD </dev/tty
 echo
 
-
 # -----------------------------
 # PostgreSQL
 # -----------------------------
 echo ">>> Запуск PostgreSQL"
-
 docker rm -f $POSTGRES_CONTAINER 2>/dev/null || true
 
 docker run -d \
@@ -134,14 +120,13 @@ sleep 10
 # Nginx (HTTP)
 # -----------------------------
 echo ">>> Запуск nginx"
-
 docker rm -f $NGINX_CONTAINER 2>/dev/null || true
 
 docker run -d \
   --name $NGINX_CONTAINER \
   --network $NETWORK \
   -p 80:80 \
-  -v $(pwd)/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+  -v $APP_DIR/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
   nginx:alpine
 
 # -----------------------------
@@ -158,7 +143,6 @@ fi
 # Запуск приложения
 # -----------------------------
 echo ">>> Запуск приложения"
-
 docker rm -f $APP_NAME 2>/dev/null || true
 
 docker run -d \
@@ -213,3 +197,4 @@ docker update --restart=always $NGINX_CONTAINER
 
 echo "✅ Deploy completed successfully"
 echo "🌍 Открой сайт по IP VPS"
+echo "📂 Репозиторий находится в $APP_DIR, можно зайти: cd ~/tt-tournament"
