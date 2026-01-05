@@ -16,7 +16,7 @@ fi
 # -----------------------------
 REPO_URL="https://github.com/DeepDight/tt-tournament.git"
 REPO_BRANCH="instdockervpsnginx"
-APP_DIR="$HOME/tt-tournament"   # Клонируем в домашнюю папку пользователя
+APP_DIR="/home/platonfokin2017/tt-tournament"   # Клонируем в домашнюю папку пользователя
 
 APP_NAME="tt-app"
 POSTGRES_CONTAINER="tt-postgres"
