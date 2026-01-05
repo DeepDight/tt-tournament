@@ -21,34 +21,6 @@ POSTGRES_USER="tournament_user"
 POSTGRES_PORT="5433"
 
 CERTBOT_DIR="$APP_DIR/certbot"
-# -----------------------------
-# Обновление системы
-# -----------------------------
-echo ">>> Обновление системы"
-apt update && apt upgrade -y
-
-# -----------------------------
-# Проверка и установка Docker
-# -----------------------------
-if ! command -v docker &> /dev/null; then
-  echo ">>> Docker не найден, устанавливаем Docker CE"
-
-  # Добавляем официальный репозиторий Docker
-  mkdir -p /etc/apt/keyrings
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-  chmod a+r /etc/apt/keyrings/docker.gpg
-
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-  https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
-  tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-  apt update
-  apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-  echo "✅ Docker установлен"
-else
-  echo "✅ Docker уже установлен"
-fi
 
 # -----------------------------
 # Клонирование репозитория
@@ -186,8 +158,7 @@ docker run -d \
 # -----------------------------
 if [ ! -d "$CERTBOT_DIR/conf/live/$DOMAIN" ]; then
     echo ">>> Генерация Let's Encrypt сертификата для $DOMAIN"
-    read -p "Введите email для сертификата: " CERT_EMAIL </dev/tty
-
+    
     docker run --rm \
       -v $CERTBOT_DIR/conf:/etc/letsencrypt \
       -v $CERTBOT_DIR/www:/var/www/certbot \
@@ -196,7 +167,7 @@ if [ ! -d "$CERTBOT_DIR/conf/live/$DOMAIN" ]; then
       --webroot-path=/var/www/certbot \
       -d $DOMAIN \
       -d www.$DOMAIN \
-      --email "$CERT_EMAIL" \
+      --email your@email.com \
       --agree-tos \
       --no-eff-email
 else
