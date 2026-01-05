@@ -169,7 +169,9 @@ if [ ! -d "$CERTBOT_DIR/conf/live/$DOMAIN" ]; then
       -d www.$DOMAIN \
       --email your@email.com \
       --agree-tos \
-      --no-eff-email
+      --no-eff-email \
+      --non-interactive \
+      --keep-until-expiring
 else
     echo "✅ Сертификат для $DOMAIN уже существует, пропускаем генерацию"
 fi
