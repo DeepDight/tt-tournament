@@ -95,14 +95,15 @@ docker network inspect $NETWORK >/dev/null 2>&1 || docker network create $NETWOR
 docker volume inspect $VOLUME >/dev/null 2>&1 || docker volume create $VOLUME
 
 # -----------------------------
-# Ввод паролей
+# Ввод паролей (через TTY)
 # -----------------------------
 echo ">>> Ввод паролей"
 
-read -s -p "Пароль для локального PostgreSQL: " POSTGRES_PASSWORD
+read -s -p "Пароль для локального PostgreSQL: " POSTGRES_PASSWORD </dev/tty
 echo
-read -s -p "Пароль BASIC_AUTH (admin): " BASIC_AUTH_PASSWORD
+read -s -p "Пароль BASIC_AUTH (admin): " BASIC_AUTH_PASSWORD </dev/tty
 echo
+
 
 # -----------------------------
 # PostgreSQL
@@ -170,13 +171,13 @@ docker run -d \
 # Загрузка дампа (опционально)
 # -----------------------------
 echo ">>> Загрузить дамп из Neon?"
-read -p "Загрузить дамп? (y/n): " LOAD_DUMP
+read -p "Загрузить дамп? (y/n): " LOAD_DUMP </dev/tty
 
 if [[ "$LOAD_DUMP" == "y" ]]; then
-  read -p "Neon host: " NEON_HOST
-  read -p "Neon user: " NEON_USER
-  read -p "Neon db name: " NEON_DB
-  read -s -p "Neon password: " NEON_PASSWORD
+  read -p "Neon host: " NEON_HOST </dev/tty
+  read -p "Neon user: " NEON_USER </dev/tty
+  read -p "Neon db name: " NEON_DB </dev/tty
+  read -s -p "Neon password: " NEON_PASSWORD </dev/tty
   echo
 
   docker run --rm -it \
