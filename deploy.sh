@@ -35,15 +35,27 @@ echo ">>> Обновление системы"
 apt update && apt upgrade -y
 
 # -----------------------------
-# Установка Docker
+# Установка Docker (docker-ce)
 # -----------------------------
 if ! command -v docker &> /dev/null; then
-  echo ">>> Установка Docker"
+  echo ">>> Установка Docker (docker-ce)"
 
+  # снимаем hold, если есть
+  apt-mark unhold docker docker.io containerd runc 2>/dev/null || true
+
+  # полностью удаляем конфликтующие пакеты
+  apt purge -y docker docker-engine docker.io containerd runc || true
+  apt autoremove -y
+  apt autoclean -y
+
+  # ключ Docker (БЕЗ интерактива)
   mkdir -p /etc/apt/keyrings
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-    gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    gpg --dearmor --yes -o /etc/apt/keyrings/docker.gpg
 
+  chmod a+r /etc/apt/keyrings/docker.gpg
+
+  # репозиторий Docker
   echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
     https://download.docker.com/linux/ubuntu \
@@ -51,12 +63,14 @@ if ! command -v docker &> /dev/null; then
     tee /etc/apt/sources.list.d/docker.list > /dev/null
 
   apt update
+
+  # УСТАНАВЛИВАЕМ ТОЛЬКО docker-ce
   apt install -y \
     docker-ce \
     docker-ce-cli \
     containerd.io \
     docker-buildx-plugin \
-    docker-compose-plugin \
+    docker-compose-plugin
 fi
 
 # -----------------------------
