@@ -35,17 +35,6 @@ echo ">>> Обновление системы"
 apt update && apt upgrade -y
 
 # -----------------------------
-# Установка базовых пакетов
-# -----------------------------
-echo ">>> Установка базовых пакетов"
-apt install -y \
-  ca-certificates \
-  curl \
-  gnupg \
-  lsb-release \
-  git
-
-# -----------------------------
 # Установка Docker
 # -----------------------------
 if ! command -v docker &> /dev/null; then
