@@ -147,8 +147,12 @@ docker run -d \
 # -----------------------------
 # Сборка приложения
 # -----------------------------
-echo ">>> Сборка приложения"
-docker build -t $APP_NAME .
+if docker image inspect "$APP_NAME" >/dev/null 2>&1; then
+  echo ">>> Docker image '$APP_NAME' уже существует, пропускаем сборку"
+else
+  echo ">>> Сборка Docker image '$APP_NAME'"
+  docker build -t "$APP_NAME" .
+fi
 
 # -----------------------------
 # Запуск приложения
@@ -180,7 +184,7 @@ if [[ "$LOAD_DUMP" == "y" ]]; then
   read -s -p "Neon password: " NEON_PASSWORD </dev/tty
   echo
 
-  docker run --rm -it \
+  docker run --rm \
     -e PGPASSWORD="$NEON_PASSWORD" \
     postgres:16 \
     pg_dump -h "$NEON_HOST" \
