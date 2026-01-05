@@ -1,3 +1,17 @@
+**AUTOMATICALLY:**
+curl -L -o setup.sh https://raw.githubusercontent.com/DeepDight/tt-tournament/instdockervpsnginx/setup.sh
+chmod +x setup.sh
+sudo ./setup.sh
+
+sudo usermod -aG docker $USER
+echo "⚠️ Чтобы изменения вступили в силу, выйдите из сессии и зайдите снова, или выполните: newgrp docker"
+docker ps
+
+curl -L -o deploy.sh https://raw.githubusercontent.com/DeepDight/tt-tournament/instdockervpsnginx/deploy.sh
+chmod +x deploy.sh
+./deploy.sh
+
+**MANUAL:**
 **Только, что созданная VPS:**
 
 sudo apt update && sudo apt upgrade -y (Обновление пакетов)
