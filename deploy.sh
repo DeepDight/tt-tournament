@@ -107,8 +107,7 @@ if [[ "$LOAD_DUMP" == "y" ]]; then
   echo ">>> Восстановление дампа в локальную базу"
   docker exec -i $POSTGRES_CONTAINER pg_restore \
     -U $POSTGRES_USER \
-    -C \
-    -d postgres \
+    -d $POSTGRES_DB \
     --no-owner \
     --no-privileges \
     /neon_tt_tournament.dump
